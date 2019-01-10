@@ -1,0 +1,6 @@
+tweepy==3.6.0
+wget==3.2
+boto3==1.9.74
+argparse==1.4.0
+configparser==3.5.0
+twython==3.7.0
