@@ -1,8 +1,8 @@
 import json
+import download_twitter_photos
 
 
-
-def hello(event, context):
+def search_for_new_tweets(event, context):
     body = {
         "message": "Go Serverless v1.0! Your function executed successfully!",
         "input": event
@@ -12,7 +12,7 @@ def hello(event, context):
         "statusCode": 200,
         "body": json.dumps(body)
     }
-    call("python download_twitter_photos.py --username cloud_images --num 10 --replies --retweets --output delivered --bucket dark-cloud-bucket2")
+    download_twitter_photos.main()
     return response
 
     # Use this code if you don't use the http event with the LAMBDA-PROXY
@@ -24,7 +24,5 @@ def hello(event, context):
     }
     """
 
-
-
-
-
+if __name__ == '__main__':
+    search_for_new_tweets('','')
