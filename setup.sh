@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Create and initialize a Python Virtual Environment
-echo "Creating virtual env - .env"
-virtualenv .env
+echo "Creating virtual env - env"
+python3 -m virtualenv env
 
-echo "sourcing virtual env - .env"
-source .env/bin/activate
+echo "sourcing virtual env - env"
+source env/bin/activate
 
 # # Create a directory to put things in
 # echo "Creating 'setup' directory"

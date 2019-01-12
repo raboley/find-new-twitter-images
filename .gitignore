@@ -18,5 +18,6 @@ var/
 .env
 node_modules
 __pycache__
+*.pyc
 # Serverless directories
 .serverless
