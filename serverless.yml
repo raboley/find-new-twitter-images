@@ -34,7 +34,9 @@ provider:
    - Effect: "Allow"
      Action:
        - "s3:ListBucket"
-     Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+     Resource: 
+      - { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+      - "arn:aws:s3:::dark-cloud-bucket"
    - Effect: "Allow"
      Action:
        - "s3:PutObject"
@@ -106,6 +108,7 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+
 
 plugins:
   - serverless-python-requirements
