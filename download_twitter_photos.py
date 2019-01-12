@@ -10,22 +10,6 @@ import get_matching_s3_objects
 
 lambda_client = boto3_client('lambda')
 get3 = get_matching_s3_objects.get_matching_s3_keys
-## Getting tweets and downloading are now linked
-# TODO: make the function to get everything in the s3 bucket so we don't download twice
-# TODO: compare that list vs the item to determine if we should download it or not
-# TODO: set up the handler to call this function
-# TODO: make sure to give this function permissions to call other functions
-
-"""
-   {
-        "Sid": "Stmt1234567890",
-        "Effect": "Allow",
-        "Action": [
-            "lambda:InvokeFunction"
-        ],
-        "Resource": "*"
-    }
-"""
 
 def parse_config(config_file):
   config = configparser.ConfigParser()
@@ -42,7 +26,7 @@ def init_tweepy():
   # Status() is the data model for a tweet
   tweepy.models.Status.first_parse = tweepy.models.Status.parse
   tweepy.models.Status.parse = parse
-  # User() is the data model for a user profil
+  # User() is the data model for a user profile
   tweepy.models.User.first_parse = tweepy.models.User.parse
   tweepy.models.User.parse = parse
 
@@ -72,10 +56,12 @@ def download_new_images(status, num_tweets, output_folder, list_of_downloaded_im
 
     for media_url in tweet_media_urls(tweet_status):
       # Only download if there is not a picture with the same name in the folder already
-      file_name = os.path.split(media_url)[1]
-      if image_is_new(media_url, list_of_downloaded_images):
-        print(media_url)
-        download_path = 'archive/' + file_name
+      if image_is_new(media_url=media_url, list_of_downloaded_images=list_of_downloaded_images):
+        print("downloading: "+ media_url)
+        
+        file_name = os.path.split(media_url)[1]
+        download_path = output_folder + file_name
+        
         tell_lambda_to_download_image(media_url=media_url, download_path=download_path)
         downloaded += 1
 
@@ -106,16 +92,16 @@ def tell_lambda_to_download_image(media_url, download_path):
                                            Payload=json.dumps(msg))
     print(invoke_response)
 
-def get_arguments():
+def get_arguments(username='cloud_images', destination_bucket='dark-cloud-bucket', num=5, output_folder='archive/'):
   args = { 
     'config': './config.cfg',
-    'username': 'cloud_images',
+    'username': username,
     'hashtag': '',
-    'num': 5,
+    'num': num,
     'retweets': False,
     'replies': False,
-    'output': 'pictures/',
-    'bucket': 'dark-cloud-bucket'
+    'output_folder': output_folder,
+    'bucket': destination_bucket
   }
   return args
 
@@ -126,7 +112,7 @@ def main():
   include_rts = arguments['retweets']
   exclude_replies = arguments['replies']
   num_tweets = arguments['num']
-  output_folder = arguments['output']
+  output_folder = arguments['output_folder']
   config_path = arguments['config']
   bucket = arguments['bucket']
 
@@ -134,7 +120,7 @@ def main():
   auth = authorize_twitter_api(config)
   api = tweepy.API(auth, wait_on_rate_limit=True)
 
-  list_of_downloaded_images = get_already_downloaded(bucket=bucket, prefix='archive/', suffix='')
+  list_of_downloaded_images = get_already_downloaded(bucket=bucket, prefix=output_folder, suffix='')
   tweets = get_tweets(api=api, screen_name=screen_name, include_rts=include_rts, exclude_replies=exclude_replies)
   download_new_images(status=tweets, num_tweets=num_tweets, output_folder=output_folder, list_of_downloaded_images=list_of_downloaded_images)
   
@@ -144,5 +130,4 @@ def main():
 #    download_images_by_user(api, username, retweets, replies, num_tweets, output_folder, bucket)
 
 if __name__=='__main__':
-    #get_matching_s3_objects(bucket='dark-cloud-bucket')
     main()

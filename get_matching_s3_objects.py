@@ -57,5 +57,3 @@ def get_matching_s3_keys(bucket, prefix='', suffix=''):
 
 if __name__ == '__main__':
    l = get_matching_s3_objects(bucket='dark-cloud-bucket')
-   l
-   l = l
