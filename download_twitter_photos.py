@@ -1,4 +1,4 @@
-from twitter import Twitter
+from twitter import Twitter, TwitterHashTag
 import os
 from tweepy import OAuthHandler
 import json
@@ -13,6 +13,7 @@ get3 = get_matching_s3_objects.get_matching_s3_keys
 
 
 def download_new_images(media_urls, num_tweets, output_folder, list_of_downloaded_images, bucket, download_lambda_name):
+  if media_urls:
     for media_url in media_urls:
       # Only download if there is not a picture with the same name in the folder already
       if image_is_new(media_url=media_url, list_of_downloaded_images=list_of_downloaded_images):
@@ -51,10 +52,11 @@ def tell_lambda_to_download_image(media_url, download_path, bucket, download_lam
                                            Payload=json.dumps(msg))
     print(invoke_response)
 
-
+def has_hashtag(string):
+  return True if '#' in string else False
 
 def main(arguments):
-  screen_name = arguments['username']
+  username_or_hashtag = arguments['username_or_hashtag']
   #hashtag = arguments['hashtag']
   include_rts = arguments['retweets']
   exclude_replies = arguments['replies']
@@ -64,25 +66,19 @@ def main(arguments):
   bucket = arguments['bucket']
   download_lambda_name = arguments['download_lambda_name']
   
-  twitter = Twitter(config_path)
-  # config = parse_config(config_path)
-  # auth = authorize_twitter_api(config)
-  # api = tweepy.API(auth, wait_on_rate_limit=True)
-
+  if has_hashtag(username_or_hashtag):
+    twitter = TwitterHashTag(config_path)
+  else:
+    twitter = Twitter(config_path)
 
   list_of_downloaded_images = get_already_downloaded(bucket=bucket, prefix=output_folder, suffix='')
-  media_urls = twitter.get_tweet_media_urls(screen_name=screen_name, include_rts=include_rts, exclude_replies=exclude_replies,max_number_image_urls=num_tweets)
+  media_urls = twitter.get_tweet_media_urls(username_or_hashtag, include_rts=include_rts, exclude_replies=exclude_replies,max_number_image_urls=num_tweets)
   download_new_images(media_urls=media_urls, num_tweets=num_tweets, output_folder=output_folder, list_of_downloaded_images=list_of_downloaded_images, bucket=bucket, download_lambda_name=download_lambda_name)
-  
-#  if hashtag:
-#    download_images_by_tag(api, hashtag, retweets, replies, num_tweets, output_folder, bucket)
-#  else:
-#    download_images_by_user(api, username, retweets, replies, num_tweets, output_folder, bucket)
 
 if __name__=='__main__':
     event = {
         "config": "./config.cfg",
-        "username": "cloud_images",
+        "username_or_hashtag": "cloud_images",
         "hashtag": "",
         "num": "3",
         "retweets": "False",

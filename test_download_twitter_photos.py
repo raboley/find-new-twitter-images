@@ -25,7 +25,14 @@ class test_get_already_downloaded(unittest.TestCase):
 
     def test_returns_false_when_object_is_in_array(self):
         self.assertFalse(dl.image_is_new('DuvaqaUUcAEJFwm.jpg',self.test_list))
-
+    
+    def test_returns_true_if_hashtag_in_event_string(self):
+        string = '#DarkCloudRocks'
+        self.assertTrue(dl.has_hashtag(string))
+        
+    def test_returns_false_if_hashtag_not_in_event_string(self):
+        string = 'cloud_images'
+        self.assertFalse(dl.has_hashtag(string))
 
 if __name__ == '__main__':
     unittest.main()

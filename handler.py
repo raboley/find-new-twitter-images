@@ -13,7 +13,7 @@ def search_for_new_tweets(event, context):
         "body": json.dumps(body)
     }
     #args = get_arguments(event=event)
-    print(event['username'])
+    print(event['username_or_hashtag'])
     download_twitter_photos.main(arguments=event)
     return response
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     #get_arguments()
     event = {
         "config": "./config.cfg",
-        "username": "cloud_images",
+        "username_or_hashtag": "cloud_images",
         "hashtag": "",
         "num": "5",
         "retweets": "False",

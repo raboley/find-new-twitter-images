@@ -1,16 +1,24 @@
 import boto3
 
-
-def get_matching_s3_objects(bucket, prefix='', suffix=''):
+def get_matching_s3_keys(bucket, prefix='', suffix=''):
+    """Returns a list of file paths from a bucket based on matching prefix and suffix
+    
+    Parameters
+    ----------
+    bucket : str
+        the string representing the bucket name to be queried
+    prefix : str, optional
+        the prefix each object in the s3 bucket should share, normally folder path
+        (the default is '', which means it will return all folder paths)
+    suffix : str, optional
+        the ending characters required by the query, normally the extension of the file
+        (the default is '', which means files of any extension will be returned)
+        
     """
-    Generate objects in an S3 bucket.
+    for obj in __get_matching_s3_objects(bucket, prefix, suffix):
+        yield obj['Key']
 
-    :param bucket: Name of the S3 bucket.
-    :param prefix: Only fetch objects whose key starts with
-        this prefix (optional).
-    :param suffix: Only fetch objects whose keys end with
-        this suffix (optional).
-    """
+def __get_matching_s3_objects(bucket, prefix='', suffix=''):
     s3 = boto3.client('s3')
     kwargs = {'Bucket': bucket}
 
@@ -44,20 +52,6 @@ def get_matching_s3_objects(bucket, prefix='', suffix=''):
             break
 
 
-def get_matching_s3_keys(bucket, prefix='', suffix=''):
-    """
-    Generate the keys in an S3 bucket.
-
-    :param bucket: Name of the S3 bucket.
-    :param prefix: Only fetch keys that start with this prefix (optional).
-    :param suffix: Only fetch keys that end with this suffix (optional).
-    """
-    for obj in get_matching_s3_objects(bucket, prefix, suffix):
-        yield obj['Key']
 
 if __name__ == '__main__':
-   l = get_matching_s3_objects(bucket='dark-cloud-bucket', prefix='__testing/')
-   count = 0
-   for obj in l:
-       count += 1
-   print(count)
+   l = get_matching_s3_keys(bucket='dark-cloud-bucket', prefix='__testing/')
