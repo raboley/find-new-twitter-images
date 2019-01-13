@@ -56,4 +56,8 @@ def get_matching_s3_keys(bucket, prefix='', suffix=''):
         yield obj['Key']
 
 if __name__ == '__main__':
-   l = get_matching_s3_objects(bucket='dark-cloud-bucket')
+   l = get_matching_s3_objects(bucket='dark-cloud-bucket', prefix='__testing/')
+   count = 0
+   for obj in l:
+       count += 1
+   print(count)

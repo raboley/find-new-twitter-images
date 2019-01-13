@@ -10,6 +10,7 @@ class test_get_already_downloaded(unittest.TestCase):
     def setUp(self):
         self.test_list = ['DuvaqaUUcAEJFwm.jpg', 'DuyDTUaXgAMN_dk.jpg','DvO94MtUwAEvIEJ.jpg','DvO94PpU0AAnNa1.jpg','DwGfVKQU8AEHvbf.jpg']
     
+    @unittest.skip("Not a good test, calls the api to read s3 and check in hardcoded value")
     def test_returns_an_object_of_file_names(self):
         l = dl.get_already_downloaded(bucket='dark-cloud-bucket', prefix='archive/')
         self.assertIn('DuvaqaUUcAEJFwm.jpg', l)
