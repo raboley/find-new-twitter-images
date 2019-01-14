@@ -3,18 +3,18 @@ import download_twitter_photos
 
 
 def search_for_new_tweets(event, context):
+    output = download_twitter_photos.main(arguments=event)
+    
     body = {
         "message": "Go Serverless v1.0! Your function executed successfully!",
-        "input": event
+        "input": event,
+        "output": output
     }
 
     response = {
         "statusCode": 200,
         "body": json.dumps(body)
     }
-    #args = get_arguments(event=event)
-    print(event['username_or_hashtag'])
-    download_twitter_photos.main(arguments=event)
     return response
 
 # Use this code if you don't use the http event with the LAMBDA-PROXY
