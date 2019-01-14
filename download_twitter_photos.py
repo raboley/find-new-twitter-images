@@ -17,10 +17,10 @@ def download_new_images(media_urls, num_tweets, output_folder, list_of_downloade
   if media_urls:
     for media_url in media_urls:
       # Only download if there is not a picture with the same name in the folder already
-      if image_is_new(media_url=media_url, list_of_downloaded_images=list_of_downloaded_images):
+      file_name = os.path.split(media_url)[1]
+      if image_is_new(file_name=file_name, list_of_downloaded_images=list_of_downloaded_images):
         print("downloading: "+ media_url)
         
-        file_name = os.path.split(media_url)[1]
         download_path = output_folder + file_name
         
         tell_lambda_to_download_image(media_url=media_url, download_path=download_path, bucket=bucket, download_lambda_name=download_lambda_name)
@@ -35,8 +35,8 @@ def download_new_images(media_urls, num_tweets, output_folder, list_of_downloade
   return downloads
 
 
-def image_is_new(media_url, list_of_downloaded_images):
-  if media_url in list_of_downloaded_images:
+def image_is_new(file_name, list_of_downloaded_images):
+  if file_name in list_of_downloaded_images:
     return False
   else:
     return True
