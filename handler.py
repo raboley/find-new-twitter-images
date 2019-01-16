@@ -3,7 +3,21 @@ import download_twitter_photos
 
 
 def search_for_new_tweets(event, context):
-    output = download_twitter_photos.main(arguments=event)
+    
+    default_event = {
+        "config": "./config.cfg",
+        "username_or_hashtag": "cloud_images",
+        "hashtag": "",
+        "num": "5",
+        "retweets": "False",
+        "replies": "False",
+        "output_folder": "archive/",
+        "bucket": "dark-cloud-bucket",
+        "download_lambda_name": "fetch-file-and-store-in-s3-dark-cloud-dev-save"
+    }
+
+    parsed_event = parse_event(default_event=default_event,event=event)
+    output = download_twitter_photos.main(arguments=parsed_event)
     
     body = {
         "message": "Go Serverless v1.0! Your function executed successfully!",
@@ -40,6 +54,16 @@ return {
 #   }
 #   print(args)
 #   return args
+
+def parse_event(default_event,event):    
+    return_event = default_event
+    
+    return_event.update(event)
+    # for key, value in default_event.items():
+    #     if key in event:
+    #         return_event.update(key = value)
+    return return_event
+
 
 if __name__ == '__main__':
     #get_arguments()

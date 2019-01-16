@@ -75,7 +75,18 @@ functions:
 #          path: users/create
 #          method: get
 #      - s3: ${env:BUCKET}
-      - schedule: rate(10 hours)
+      - schedule: rate(1 minute)
+        # input:
+        #   config: "./config.cfg"
+        #   username_or_hashtag: "cloud_images"
+        #   num: "5"
+        #   retweets: "False"
+        #   replies: "False"
+        #   output_folder: "archive/"
+        #   bucket: "dark-cloud-bucket"
+        #   download_lambda_name: "fetch-file-and-store-in-s3-dark-cloud-dev-save"
+        #   stageParams:
+        #     stage: dev
 #      - sns: greeter-topic
 #      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
 #      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
