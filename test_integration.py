@@ -72,6 +72,10 @@ class test_integration_handler(unittest.TestCase):
         
         self.assertTrue(pushed_objects)
 
-
-
-
+    def test_teardown_does_remove_items(self):
+        pushed_objects =get_matching_s3_objects.get_matching_s3_keys(bucket=self.event_user['bucket'], prefix=self.event_user['output_folder'])
+        
+        count = 0
+        for obj in pushed_objects:
+            count+= 1
+        self.assertEqual(int(0), count)
